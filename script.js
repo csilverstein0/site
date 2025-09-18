@@ -230,6 +230,20 @@ class ScreenEffect {
   } 
 }
 
+// Email obfuscation (Spencer Mortensen technique)
+document.addEventListener('DOMContentLoaded', function () {
+  const a = document.getElementById('link-conversion');
+  
+  if (a) {
+    a.setAttribute('href', a.getAttribute('href')
+      .replace('to-', 'mailto:')
+      .replace('-', '@')
+      .replaceAll('-', '.')
+      .replace('/', '.com')
+    );
+  }
+});
+
 // Initialize VHS effects
 const screen = new ScreenEffect("#screen", {});
 
