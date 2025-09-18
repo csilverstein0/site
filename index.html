@@ -3,108 +3,80 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Aerthship-ish • Your Title</title>
-  <meta name="description" content="One-line description." />
-  <!-- Fonts: free, similar feel to Cargo's Diatype -->
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;600&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <title>Casey</title>
+  <meta name="description" content="casey is exploring xyz." />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg:#ff5a25;              /* orange field */
-      --ink:rgba(255,247,223,.85);/* warm cream text */
-      --ink-muted:rgba(255,247,223,.75);
-      --line:rgba(255,247,223,.6);
-      --panel-b:rgba(255,247,223,.2);
-      --maxw:1100px;
-      --gutter:2rem;
-      --radius:1.2rem;
+      --hero: url('https://images.unsplash.com/photo-1525253013412-55c1a69a5738?q=80&w=2000&auto=format&fit=crop'); /* ← swap to your photo */
+      --panel:#bf1e1e;            /* red card */
+      --ink:#fff7df;              /* warm cream text */
+      --muted:rgba(255,247,223,.85);
+      --radius:18px;
+      --shadow:0 10px 30px rgba(0,0,0,.25);
+      --pad:clamp(12px,2.6vw,20px);
+      --edge:0px;                /* outer white edge; set 0 for true full-bleed */
     }
     *{box-sizing:border-box}
-    html,body{margin:0;height:100%}
+    html,body{height:100%;margin:0}
     body{
-      background:var(--bg);
-      font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto;
-      color:var(--ink);
+      font-family:"IBM Plex Mono", ui-monospace, Menlo, monospace;
       -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      /* FULL-BLEED BACKGROUND IMAGE */
+      background:
+        var(--hero) center / cover no-repeat fixed;
     }
-    .wrap{max-width:var(--maxw);margin:0 auto;padding:4rem var(--gutter) 6rem}
-    .page{
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      padding:clamp(1.25rem,2vw,2.5rem);
-      background:linear-gradient(0deg, transparent, transparent);
+    /* Optional thin white frame like your ref */
+    .edge{
+      min-height:100dvh;
+      margin:var(--edge);
+      border-radius:10px;
+      outline:1px solid rgba(255,255,255,.8);
+      outline-offset:-1px;
+      position:relative;
     }
-    header{display:grid;grid-template-columns:1fr;gap:var(--gutter);align-items:start}
-    @media(min-width:900px){header{grid-template-columns:3fr 9fr}}
-    h1{
-      font-family:Inter,system-ui; font-weight:600;
-      font-size:clamp(2rem,6vw,4rem);
-      line-height:.9; letter-spacing:-.015em; margin:0;
-      color:var(--ink-muted);
+
+    /* Red panel */
+    .panel{
+      position:fixed;             /* sits over the background */
+      top:calc(var(--edge) + 10px);
+      left:calc(var(--edge) + 10px);
+      width:min(420px, 90vw);
+      height:calc(100dvh - (var(--edge)*2) - 20px);
+      background:var(--panel);
+      color:var(--ink);
+      border-radius:14px;
+      border:1px solid rgba(0,0,0,.25);
+      box-shadow:var(--shadow);
+      display:flex;
     }
-    .logo{display:block; aspect-ratio:3/1; width:min(360px,100%); background:#fff2; border:1px solid var(--line); border-radius:.6rem}
-    .contact{ text-align:right; color:var(--ink-muted); line-height:1.4 }
-    .contact a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--ink); padding-bottom:1px}
-    .section{display:grid; grid-template-columns:1fr; gap:var(--gutter); margin-top:2.5rem}
-    @media(min-width:900px){.section{grid-template-columns:1fr 2fr 2fr}}
-    .block{
-      border:1px solid var(--line);
-      border-radius:var(--radius);
-      padding:1.1rem 1.3rem; background:var(--panel-b)
+    .panel-inner{padding:clamp(16px,2.2vw,22px); display:flex; flex-direction:column; width:100%}
+
+    .title{
+      font-family:"Playfair Display", Georgia, serif;
+      font-weight:800; line-height:.9;
+      font-size:clamp(40px,12vw,96px);
+      letter-spacing:-.01em; margin:6px 6px 10px;
+      text-shadow:0 1px 0 rgba(0,0,0,.15);
     }
-    .bodycopy{
-      font-family:"IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-weight:400; font-size:clamp(1rem,1.8vw,1.1rem); line-height:1.35;
-      color:var(--ink-muted);
+    .byline{margin:0 6px; color:var(--muted); font-size:clamp(14px,2.2vw,16px); line-height:1.35}
+    .rule{margin:18px 6px; height:1px; background:linear-gradient(90deg,rgba(255,255,255,.25),rgba(255,255,255,.15)); border-radius:1px}
+
+    /* Mobile: panel becomes normal flow */
+    @media (max-width: 860px){
+      .panel{position:static; width:auto; height:auto; margin:var(--edge);}
     }
-    h2{
-      font-family:Inter,system-ui; font-weight:800; margin:.2rem 0 1rem;
-      font-size:clamp(1.1rem,2.2vw,1.5rem); color:var(--ink-muted);
-    }
-    hr{border:0; height:1px; background:rgba(0,0,0,.15); margin:.6rem 0}
-    .caps{font-variant:small-caps; text-transform:lowercase; letter-spacing:.02em}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="page">
-      <header>
-        <div>
-          <h1>YOUR LOGO / HEADLINE</h1>
-          <!-- optional logo placeholder -->
-          <!-- <span class="logo"></span> -->
-        </div>
-        <div class="contact">
-          <div class="caps">FOUNDED 2021</div>
-          NEW YORK<br>
-          <a href="mailto:hello@yourdomain.com">HELLO@YOURDOMAIN.COM</a><br>
-          <a href="https://instagram.com/yourhandle" target="_blank" rel="noopener">INSTAGRAM.COM/YOURHANDLE</a>
-        </div>
-      </header>
-
-      <section class="section">
-        <div class="block">
-          <!-- Left column image placeholder -->
-          <!-- Replace src with your asset -->
-          <img src="https://picsum.photos/800/800" alt="" style="width:100%;height:auto;border-radius:.6rem;border:1px solid var(--line)">
-        </div>
-
-        <div class="block bodycopy">
-          We can’t condone being human, for now. <br><br>
-          So much stands in our way as passengers on this small spaceship…
-          <!-- Write your statement here -->
-          <br><br><hr>
-        </div>
-
-        <div class="block bodycopy">
-          <h2>❶ Project Title / Work</h2>
-          <i>Short descriptor &ndash; year, role, collaborators.</i><br><br>
-          <h2>❷ Another Work / Event</h2>
-          Supporters, notes, credits…<br><br>
-          <h2>❸ Residency / Series</h2>
-          Details go here.
-        </div>
-      </section>
+  <div class="edge" aria-hidden="true"></div>
+  <aside class="panel">
+    <div class="panel-inner">
+      <h1 class="title">Casey<br>Silverstein</h1>
+      <p class="byline">casey is exploring xyz.</p>
+      <div class="rule"></div>
+      <div style="margin-top:auto"></div>
     </div>
-  </div>
+  </aside>
 </body>
 </html>
