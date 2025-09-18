@@ -38,29 +38,38 @@
 
     /* Red panel */
     .panel{
-      position:fixed;             /* sits over the background */
-      top:calc(var(--edge) + 10px);
-      left:calc(var(--edge) + 10px);
-      width:min(420px, 90vw);
-      height:calc(100dvh - (var(--edge)*2) - 20px);
-      background:var(--panel);
-      color:var(--ink);
-      border-radius:14px;
-      border:1px solid rgba(0,0,0,.25);
-      box-shadow:var(--shadow);
-      display:flex;
-    }
+  position: absolute;                /* was fixed */
+  top: calc(var(--edge) + 10px);
+  left: calc(var(--edge) + 10px);
+  width: min(420px, 90vw);
+  height: auto;                      /* auto height based on content */
+  max-height: calc(100dvh - (var(--edge)*2) - 20px); /* safety on small screens */
+  background: var(--panel);
+  color: var(--ink);
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,.25);
+  box-shadow: var(--shadow);
+  display: flex;
+  overflow: auto;                    /* scroll if content ever exceeds max-height */
+}
     .panel-inner{padding:clamp(16px,2.2vw,22px); display:flex; flex-direction:column; width:100%}
 
     .title{
-      font-family:"Playfair Display", Georgia, serif;
-      font-weight:800; line-height:.9;
-      font-size:clamp(40px,12vw,96px);
-      letter-spacing:-.01em; margin:6px 6px 10px;
-      text-shadow:0 1px 0 rgba(0,0,0,.15);
-    }
-    .byline{margin:0 6px; color:var(--muted); font-size:clamp(14px,2.2vw,16px); line-height:1.35}
-    .rule{margin:18px 6px; height:1px; background:linear-gradient(90deg,rgba(255,255,255,.25),rgba(255,255,255,.15)); border-radius:1px}
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 800;
+  line-height: .9;
+  font-size: clamp(32px, 8vw, 72px);   /* was up to 96px */
+  letter-spacing: -.01em;
+  margin: 6px 6px 8px;
+  text-shadow: 0 1px 0 rgba(0,0,0,.15);
+}
+
+.byline{
+  margin: 0 6px 4px;
+  color: var(--muted);
+  font-size: clamp(12px, 1.9vw, 15px); /* a touch smaller */
+  line-height: 1.35;
+}    .rule{margin:18px 6px; height:1px; background:linear-gradient(90deg,rgba(255,255,255,.25),rgba(255,255,255,.15)); border-radius:1px}
 
     /* Mobile: panel becomes normal flow */
     @media (max-width: 860px){
