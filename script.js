@@ -258,7 +258,7 @@ screen.add("vcr", {
   miny: isMobile ? 150 : 220,
   miny2: isMobile ? 150 : 220,
   num: isMobile ? 5 : 20,
-  fps: 30
+  fps: isMobile ? 15 : 24
 });
 screen.add("wobbley");
 screen.add("snow", {
