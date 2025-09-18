@@ -196,7 +196,7 @@ class ScreenEffect {
     
     canvas.style.filter = `blur(${config.blur}px)`;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = `#fff`;
+    ctx.fillStyle = `rgba(255, 255, 255, ${config.opacity || 0.3})`;
 
     ctx.beginPath();
     for (var i = 0; i <= num; i++) {
@@ -247,17 +247,20 @@ document.addEventListener('DOMContentLoaded', function () {
 // Initialize VHS effects
 const screen = new ScreenEffect("#screen", {});
 
-// Add effects
+// Check if mobile
+const isMobile = window.innerWidth <= 860;
+
+// Add effects with mobile-specific settings
 screen.add("vignette");
 screen.add("scanlines");
 screen.add("vcr", {
-  opacity: 0.3,
-  miny: 220,
-  miny2: 220,
-  num: 20,
+  opacity: isMobile ? 0.2 : 0.3,
+  miny: isMobile ? 150 : 220,
+  miny2: isMobile ? 150 : 220,
+  num: isMobile ? 5 : 20,
   fps: 30
 });
 screen.add("wobbley");
 screen.add("snow", {
-  opacity: 0.2
+  opacity: isMobile ? 0.1 : 0.2
 });
