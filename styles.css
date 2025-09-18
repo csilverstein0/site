@@ -1,0 +1,223 @@
+* { box-sizing: border-box }
+html, body { height: 100%; margin: 0 }
+
+body {
+  font-family: "Rubik", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin: 0;
+  padding: 0;
+  background: #000;
+}
+
+#screen {
+  width: 100%;
+  height: 100%;
+  background-image: url(./images/hero.png);
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  border-top: 100px solid #000;
+  border-bottom: 100px solid #000;
+  border-left: 175px solid #000;
+  border-right: 175px solid #000;
+  box-sizing: border-box;
+  filter: brightness(1.2);
+}
+
+.panel {
+  position: absolute;
+  top: 50px;
+  left: 80px;
+  width: min(420px, 90vw);
+  max-height: calc(100dvh - 100px);
+  background: #bd0909;
+  color: #fff7df;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,.25);
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  padding: clamp(16px, 2.2vw, 22px);
+  overflow: auto;
+  z-index: 10001;
+}
+
+.title {
+  font-family: "Rubik", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 100;
+  line-height: .9;
+  font-size: clamp(12px, 6vw, 24px);
+  letter-spacing: -.05em;
+  margin: 6px 0 8px;
+  text-shadow: 0 0px 0 rgba(0,0,0,.15);
+}
+
+.byline {
+  margin: 0 0 4px;
+  color: rgba(255,247,223,.85);
+  font-size: clamp(12px, 1.9vw, 15px);
+  line-height: 1.35;
+}
+
+.rule {
+  margin: 18px 0;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255,255,255,.25), rgba(255,255,255,.15));
+  border-radius: 1px;
+}
+
+/* VHS Effects */
+.screen-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.screen-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%; 
+}
+
+.vcr {
+  opacity: 0.8;
+}
+
+.video {
+  filter: blur(1px);
+  width: 100%;
+  height: 100%; 
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  filter: blur(1.2px);
+}
+
+.vignette {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/86186/crt.png');
+  background-repeat: no-repeat;
+  background-size: 100% 100%; 
+  z-index: 10000;
+}
+
+.scanlines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  background: linear-gradient(
+    transparent 50%,
+    rgba(18, 16, 16, 0.25) 50%
+  ),
+  linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.06),
+    rgba(0, 255, 0, 0.02),
+    rgba(0, 0, 255, 0.06)
+  );
+  background-size: 100% 2px, 3px 100%;
+  pointer-events: none;
+}
+
+.wobblex {
+  animation: wobblex 100ms infinite;
+}
+
+.wobbley {
+  animation: wobbley 100ms infinite;
+}
+
+.glitch {
+  animation: 5s ease 2000ms normal none infinite running glitch;
+}
+
+.roller {
+  position: relative;
+  animation: 2000ms linear 0ms forwards infinite roll;
+}
+
+canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 9998;
+  width: 100%;
+  height: 100%;
+}
+
+canvas.snow {
+  background-color: #aaa;
+  opacity: 0.15;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@keyframes wobblex {
+  50% {
+    transform: translateX(1px);
+  }
+  51% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes wobbley {
+  0% {
+    transform: translateY(1px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes glitch {
+  30% {
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1, 1);
+    transform: skew(0, 0);
+  }
+  41% {
+    opacity: 0.8;
+    transform: scale(1, 1.2);
+    transform: skew(80deg, 0);
+  }
+  42% {
+    opacity: 0.8;
+    transform: scale(1, 1.2);
+    transform: skew(-50deg, 0);
+  }
+  43% {
+    opacity: 1;
+    transform: scale(1, 1);
+    transform: skew(0, 0);
+  }
+  65% {
+  }
+}
+
+@keyframes roll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, -50%, 0);
+  }
+}
+
+@media (max-width: 860px) {
+  .panel {
+    position: static;
+    width: auto;
+    margin: 10px;
+  }
+}
