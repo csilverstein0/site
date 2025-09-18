@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>YOUR PROJECT — clear one-liner</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="WHAT IT IS + WHO IT’S FOR + OUTCOME (120–160 chars).">
+  <!-- Open Graph for good link previews -->
+  <meta property="og:title" content="YOUR PROJECT — clear one-liner" />
+  <meta property="og:description" content="WHAT IT IS + WHO IT’S FOR + OUTCOME." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://YOURDOMAIN.com/og.jpg" />
+  <meta property="og:url" content="https://YOURDOMAIN.com" />
+  <style>
+    :root { --bg:#0b0b10; --fg:#eaeaf0; --muted:#b2b7c3; --accent:#6ee7ff; }
+    *{box-sizing:border-box} body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter;
+      background:radial-gradient(80vw 40vh at 50% -20%,#10121a 30%,#0b0b10 60%); color:var(--fg); line-height:1.55}
+    .wrap{max-width:900px;margin:0 auto;padding:56px 20px}
+    header{padding:56px 0 24px;border-bottom:1px solid #1b1f2b}
+    h1{font-size:clamp(28px,5vw,44px);margin:0 0 12px}
+    p.lede{color:var(--muted);font-size:clamp(16px,2.6vw,20px);margin:0}
+    .cta{display:inline-block;margin-top:18px;padding:12px 18px;border-radius:10px;border:1px solid #31374a;
+      text-decoration:none;color:var(--fg)}
+    .cta.primary{border-color:transparent;background:linear-gradient(90deg,#3bdcff, #7afcff)}
+    .proof{display:flex;gap:14px;flex-wrap:wrap;padding:18px 0 4px}
+    .badge{border:1px solid #1f2433;border-radius:8px;padding:8px 10px;color:#cdd3e0;font-size:14px;background:#0e111a}
+    section{padding:36px 0;border-bottom:1px solid #1b1f2b}
+    .grid{display:grid;grid-template-columns:1fr;gap:16px}
+    @media(min-width:820px){.grid{grid-template-columns:1fr 1fr}}
+    .card{border:1px solid #1f2433;border-radius:12px;padding:18px;background:#0e111a}
+    footer{padding:28px 0;color:#9097a6;font-size:14px}
+    a{color:var(--accent)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>HEADLINE: the outcome in one sentence</h1>
+      <p class="lede">WHO it’s for, the PROBLEM, and the RESULT (no fluff).</p>
+      <a class="cta primary" href="#contact">Get in touch</a>
+      <a class="cta" href="YOUR_PDF_OR_DECK_URL" target="_blank" rel="noopener">One-pager</a>
+      <div class="proof">
+        <span class="badge">As seen in LOGO/NAME</span>
+        <span class="badge">Trusted by X customers</span>
+        <span class="badge">Backed by NAME/ORG</span>
+      </div>
+    </header>
+
+    <section>
+      <div class="grid">
+        <div class="card">
+          <h3>What it is</h3>
+          <p>One paragraph explaining what you do in plain English. No jargon.</p>
+        </div>
+        <div class="card">
+          <h3>Why it matters</h3>
+          <ul>
+            <li>Proof point #1 (metric/result)</li>
+            <li>Proof point #2 (metric/result)</li>
+            <li>Proof point #3 (social proof/testimonial)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="testimonials">
+      <h3>What people say</h3>
+      <div class="card">
+        <p>“SHORT PUNCHY QUOTE.” — Name, Title @ Company</p>
+      </div>
+    </section>
+
+    <section id="contact">
+      <h3>Contact</h3>
+      <p>Email: <a href="mailto:you@yourdomain.com">you@yourdomain.com</a> · Twitter: <a href="https://x.com/yourhandle">@yourhandle</a></p>
+    </section>
+
+    <footer>
+      © <span id="y"></span> YOUR NAME — <a href="/privacy.html">Privacy</a>
+    </footer>
+  </div>
+  <script>document.getElementById('y').textContent = new Date().getFullYear()</script>
+</body>
+</html>
