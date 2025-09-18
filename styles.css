@@ -23,6 +23,8 @@ body {
   border-right: 175px solid #000;
   box-sizing: border-box;
   filter: brightness(1.2);
+  transform: scale(0.7);
+  transform-origin: center center;
 }
 
 .panel {
@@ -31,7 +33,7 @@ body {
   left: 80px;
   width: min(420px, 90vw);
   max-height: calc(100dvh - 100px);
-  background: #bd0909;
+  background: #FF5A24;
   color: #fff7df;
   border-radius: 14px;
   border: 1px solid rgba(0,0,0,.25);
