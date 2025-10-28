@@ -228,7 +228,7 @@
   
   <script>
     function testJourneyAudio() {
-      const audio = new Audio('graced/journey-audio.mp3');
+      const audio = new Audio('/journey-audio.mp3');
       audio.play().catch(err => {
         alert('Journey audio file not found.\n\nAdd journey-audio.mp3 to: site/graced/');
         console.log('Audio error:', err);
@@ -236,7 +236,7 @@
     }
     
     function testArrivalAudio() {
-      const audio = new Audio('graced/arrival-audio.mp3');
+      const audio = new Audio('/arrival-audio.mp3');
       audio.play().catch(err => {
         alert('Arrival audio file not found.\n\nAdd arrival-audio.mp3 to: site/graced/');
         console.log('Audio error:', err);
