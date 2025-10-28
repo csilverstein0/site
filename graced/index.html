@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>graced - casey.earth</title>
+  <meta name="description" content="A curated experience by Casey Silverstein" />
+  <meta name="theme-color" content="#000000" />
+  <style>
+    * { 
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #000;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 600px;
+      width: 100%;
+      background: #1a1a1a;
+      border-radius: 14px;
+      padding: 40px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    h1 {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+    
+    .subtitle {
+      color: #888;
+      font-size: 14px;
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+    
+    .audio-section {
+      margin-bottom: 32px;
+    }
+    
+    .audio-label {
+      font-size: 14px;
+      color: #aaa;
+      margin-bottom: 8px;
+      display: block;
+    }
+    
+    audio {
+      width: 100%;
+      margin-bottom: 12px;
+      outline: none;
+    }
+    
+    audio::-webkit-media-controls-panel {
+      background-color: #2a2a2a;
+    }
+    
+    .button {
+      display: inline-block;
+      padding: 12px 24px;
+      background: #fff;
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      margin-right: 12px;
+      margin-top: 8px;
+    }
+    
+    .button:hover {
+      background: #f0f0f0;
+      transform: translateY(-1px);
+    }
+    
+    .button:active {
+      transform: translateY(0);
+    }
+    
+    .button.secondary {
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .button.secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .ready-section {
+      margin-top: 40px;
+      padding-top: 32px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .ready-button {
+      width: 100%;
+      background: #FF5A24;
+      color: #fff;
+      padding: 16px 32px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+    }
+    
+    .ready-button:hover {
+      background: #e04a1c;
+      transform: translateY(-2px);
+    }
+    
+    .ready-button:active {
+      transform: translateY(0);
+    }
+    
+    .location-status {
+      margin-top: 16px;
+      padding: 12px;
+      background: rgba(255, 90, 36, 0.1);
+      border: 1px solid rgba(255, 90, 36, 0.2);
+      border-radius: 6px;
+      font-size: 14px;
+      display: none;
+    }
+    
+    .location-status.show {
+      display: block;
+    }
+    
+    .location-status.arrival {
+      background: rgba(46, 204, 113, 0.1);
+      border-color: rgba(46, 204, 113, 0.2);
+      color: #2ecc71;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>graced</h1>
+    <p class="subtitle">A curated experience by Casey Silverstein</p>
+    
+    <div class="audio-section">
+      <span class="audio-label">Journey Audio</span>
+      <audio id="journeyAudio" controls>
+        <source src="journey-audio.mp3" type="audio/mpeg">
+        <source src="journey-audio.ogg" type="audio/ogg">
+        Your browser does not support the audio element.
+      </audio>
+      <button class="button" onclick="testJourneyAudio()">Test Journey Audio</button>
+    </div>
+    
+    <div class="audio-section">
+      <span class="audio-label">Arrival Audio</span>
+      <audio id="arrivalAudio" controls>
+        <source src="arrival-audio.mp3" type="audio/mpeg">
+        <source src="arrival-audio.ogg" type="audio/ogg">
+        Your browser does not support the audio element.
+      </audio>
+      <button class="button secondary" onclick="testArrivalAudio()">Test Arrival Audio</button>
+    </div>
+    
+    <div class="ready-section">
+      <button class="ready-button" onclick="startExperience()">I'm Ready</button>
+      <div id="locationStatus" class="location-status"></div>
+    </div>
+  </div>
+  
+  <script>
+    let watchId = null;
+    let journeyAudio = document.getElementById('journeyAudio');
+    let arrivalAudio = document.getElementById('arrivalAudio');
+    let locationStatus = document.getElementById('locationStatus');
+    let destinationReached = false;
+    
+    // For now, using a placeholder destination (Park XYZ)
+    // You'll replace this with your actual destination coordinates
+    const destination = {
+      lat: 37.7749,  // Example: San Francisco (replace with your park)
+      lng: -122.4194,
+      arrivalRadius: 50 // meters
+    };
+    
+    function testJourneyAudio() {
+      if (journeyAudio.src) {
+        journeyAudio.play();
+      } else {
+        alert('Journey audio file not found. Please add journey-audio.mp3 to the graced folder.');
+      }
+    }
+    
+    function testArrivalAudio() {
+      if (arrivalAudio.src) {
+        arrivalAudio.play();
+      } else {
+        alert('Arrival audio file not found. Please add arrival-audio.mp3 to the graced folder.');
+      }
+    }
+    
+    function startExperience() {
+      const url = `https://www.google.com/maps/dir/?api=1&destination=${destination.lat},${destination.lng}`;
+      window.open(url, '_blank');
+      
+      // Start location tracking
+      if (navigator.geolocation) {
+        locationStatus.textContent = 'Starting journey...';
+        locationStatus.classList.add('show');
+        
+        watchId = navigator.geolocation.watchPosition(
+          checkDestination,
+          handleLocationError,
+          {
+            enableHighAccuracy: true,
+            maximumAge: 10000,
+            timeout: 10000
+          }
+        );
+        
+        // Play journey audio
+        if (journeyAudio.src && !journeyAudio.paused) {
+          journeyAudio.pause();
+          journeyAudio.currentTime = 0;
+        }
+        journeyAudio.play().catch(err => {
+          console.log('Audio autoplay prevented:', err);
+        });
+        
+      } else {
+        locationStatus.textContent = 'Geolocation is not supported by your browser.';
+        locationStatus.classList.add('show');
+      }
+    }
+    
+    function checkDestination(position) {
+      if (destinationReached) return;
+      
+      const currentLat = position.coords.latitude;
+      const currentLng = position.coords.longitude;
+      
+      const distance = calculateDistance(
+        currentLat,
+        currentLng,
+        destination.lat,
+        destination.lng
+      );
+      
+      locationStatus.textContent = `Distance to destination: ${Math.round(distance)} meters`;
+      
+      if (distance <= destination.arrivalRadius) {
+        destinationReached = true;
+        locationStatus.textContent = 'You have arrived!';
+        locationStatus.classList.add('arrival');
+        
+        // Stop journey audio and play arrival audio
+        journeyAudio.pause();
+        arrivalAudio.play();
+        
+        // Stop watching position
+        if (watchId !== null) {
+          navigator.geolocation.clearWatch(watchId);
+          watchId = null;
+        }
+      }
+    }
+    
+    function handleLocationError(error) {
+      let message = 'Unable to get location: ';
+      switch(error.code) {
+        case error.PERMISSION_DENIED:
+          message += 'Permission denied';
+          break;
+        case error.POSITION_UNAVAILABLE:
+          message += 'Position unavailable';
+          break;
+        case error.TIMEOUT:
+          message += 'Request timeout';
+          break;
+        default:
+          message += 'Unknown error';
+          break;
+      }
+      locationStatus.textContent = message;
+      locationStatus.classList.add('show');
+    }
+    
+    function calculateDistance(lat1, lng1, lat2, lng2) {
+      const R = 6371000; // Earth's radius in meters
+      const dLat = toRad(lat2 - lat1);
+      const dLng = toRad(lng2 - lng1);
+      
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                Math.sin(dLng / 2) * Math.sin(dLng / 2);
+      
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    }
+    
+    function toRad(degrees) {
+      return degrees * (Math.PI / 180);
+    }
+  </script>
+</body>
+</html>
+
