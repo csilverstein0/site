@@ -246,17 +246,10 @@
     function startJourney() {
       // Madeline Park: 900 E Baltimore Dr, El Paso, TX 79902
       const destination = '900+E+Baltimore+Dr,+El+Paso,+TX+79902';
-      
-      // Try to open in the app first, then fall back to web
-      const mapsApp = `google.navigation:q=${destination}&mode=w`;
       const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${destination}&travelmode=walking`;
       
-      // Try iOS Maps or Google Maps app first
-      if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
-        window.location.href = `maps://maps.google.com/maps?daddr=${destination}&dirflg=w`;
-      } else {
-        window.location.href = mapsUrl;
-      }
+      // Always open in Google Maps
+      window.location.href = mapsUrl;
     }
   </script>
 </body>
