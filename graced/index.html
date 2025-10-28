@@ -26,223 +26,48 @@
       padding: 20px;
     }
     
-    .container {
-      max-width: 600px;
-      width: 100%;
-      background: #1a1a1a;
-      border-radius: 14px;
-      padding: 40px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    h1 {
-      font-size: 32px;
-      font-weight: 600;
-      margin-bottom: 12px;
-      color: #fff;
-    }
-    
-    .subtitle {
-      color: #888;
-      font-size: 14px;
-      margin-bottom: 32px;
-      line-height: 1.5;
-    }
-    
-    .info {
-      background: #2a2a2a;
-      border-radius: 8px;
-      padding: 16px;
-      margin-bottom: 32px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-    
-    .info h3 {
-      font-size: 14px;
-      margin-bottom: 8px;
-      color: #fff;
-    }
-    
-    .info p {
-      font-size: 13px;
-      color: #aaa;
-      line-height: 1.5;
-    }
-    
-    .audio-section {
-      margin-bottom: 32px;
-    }
-    
-    .audio-label {
-      font-size: 14px;
-      color: #aaa;
-      margin-bottom: 12px;
-      display: block;
-    }
-    
     .button {
-      display: inline-block;
-      padding: 12px 24px;
-      background: #fff;
-      color: #000;
+      background: #FF5A24;
+      color: #fff;
       border: none;
-      border-radius: 6px;
-      font-size: 14px;
-      font-weight: 500;
+      border-radius: 8px;
+      padding: 18px 48px;
+      font-size: 18px;
+      font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
-      margin-right: 12px;
-    }
-    
-    .button:hover {
-      background: #f0f0f0;
-      transform: translateY(-1px);
+      min-height: 56px;
     }
     
     .button:active {
-      transform: translateY(0);
-    }
-    
-    .button.secondary {
-      background: transparent;
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-    
-    .button.secondary:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.5);
-    }
-    
-    .button.primary {
-      background: #FF5A24;
-      color: #fff;
-      width: 100%;
-      padding: 16px 32px;
-      font-size: 16px;
-      font-weight: 600;
-      margin-top: 32px;
-    }
-    
-    .button.primary:hover {
       background: #e04a1c;
-      transform: translateY(-2px);
+      transform: scale(0.98);
     }
     
-    /* Mobile optimizations */
     @media (max-width: 768px) {
       body {
         padding: 16px;
       }
       
-      .container {
-        padding: 24px;
-        border-radius: 12px;
-      }
-      
-      h1 {
-        font-size: 28px;
-      }
-      
-      .subtitle {
-        font-size: 13px;
-      }
-      
-      .info {
-        padding: 12px;
-      }
-      
-      .info p {
-        font-size: 12px;
-      }
-      
-      .audio-section {
-        margin-bottom: 24px;
-      }
-      
       .button {
-        display: block;
         width: 100%;
-        margin-right: 0;
-        margin-bottom: 12px;
-        padding: 14px 24px;
-        font-size: 15px;
-        min-height: 48px; /* Touch-friendly minimum size */
-      }
-      
-      .button:last-child {
-        margin-bottom: 0;
-      }
-      
-      .button.primary {
-        padding: 18px 32px;
+        padding: 20px 48px;
         font-size: 17px;
-        min-height: 56px;
       }
     }
     
-    /* Disable hover effects on touch devices */
-    @media (hover: none) {
+    @media (hover: hover) {
       .button:hover {
-        background: #fff;
-        color: #000;
-        transform: none;
-      }
-      
-      .button.secondary:hover {
-        background: transparent;
-        border-color: rgba(255, 255, 255, 0.3);
-      }
-      
-      .button.primary:hover {
-        background: #FF5A24;
-        transform: none;
+        background: #e04a1c;
+        transform: translateY(-2px);
       }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>graced</h1>
-    <p class="subtitle">A curated experience by Casey Silverstein</p>
-    
-    <div class="info">
-      <h3>📁 Audio Files Location</h3>
-      <p>Add your audio files to: <code>site/graced/</code><br>
-      - journey-audio.mp3<br>
-      - arrival-audio.mp3</p>
-    </div>
-    
-    <div class="audio-section">
-      <span class="audio-label">Journey Audio</span>
-      <button class="button" onclick="testJourneyAudio()">Test Journey Audio</button>
-    </div>
-    
-    <div class="audio-section">
-      <span class="audio-label">Arrival Audio</span>
-      <button class="button secondary" onclick="testArrivalAudio()">Test Arrival Audio</button>
-    </div>
-    
-    <button class="button primary" onclick="startJourney()">Start Journey</button>
-  </div>
+  <button class="button" onclick="startJourney()">Start Journey</button>
   
   <script>
-    function testJourneyAudio() {
-      const audio = new Audio('/journey-audio.mp3');
-      audio.play().catch(err => {
-        alert('Journey audio file not found.\n\nAdd journey-audio.mp3 to: site/graced/');
-        console.log('Audio error:', err);
-      });
-    }
-    
-    function testArrivalAudio() {
-      const audio = new Audio('/arrival-audio.mp3');
-      audio.play().catch(err => {
-        alert('Arrival audio file not found.\n\nAdd arrival-audio.mp3 to: site/graced/');
-        console.log('Audio error:', err);
-      });
-    }
-    
     function startJourney() {
       // Mission Hills Park: 3800 Okeefe Dr, El Paso, TX 79902
       const destination = '3800+Okeefe+Dr,+El+Paso,+TX+79902';
@@ -254,4 +79,3 @@
   </script>
 </body>
 </html>
-
