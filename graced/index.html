@@ -111,6 +111,21 @@
       background: rgba(255, 255, 255, 0.1);
       border-color: rgba(255, 255, 255, 0.5);
     }
+    
+    .button.primary {
+      background: #FF5A24;
+      color: #fff;
+      width: 100%;
+      padding: 16px 32px;
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 32px;
+    }
+    
+    .button.primary:hover {
+      background: #e04a1c;
+      transform: translateY(-2px);
+    }
   </style>
 </head>
 <body>
@@ -134,11 +149,13 @@
       <span class="audio-label">Arrival Audio</span>
       <button class="button secondary" onclick="testArrivalAudio()">Test Arrival Audio</button>
     </div>
+    
+    <button class="button primary" onclick="startJourney()">Start Journey</button>
   </div>
   
   <script>
     function testJourneyAudio() {
-      const audio = new Audio('journey-audio.mp3');
+      const audio = new Audio('/journey-audio.mp3');
       audio.play().catch(err => {
         alert('Journey audio file not found.\n\nAdd journey-audio.mp3 to: site/graced/');
         console.log('Audio error:', err);
@@ -146,11 +163,20 @@
     }
     
     function testArrivalAudio() {
-      const audio = new Audio('arrival-audio.mp3');
+      const audio = new Audio('/arrival-audio.mp3');
       audio.play().catch(err => {
         alert('Arrival audio file not found.\n\nAdd arrival-audio.mp3 to: site/graced/');
         console.log('Audio error:', err);
       });
+    }
+    
+    function startJourney() {
+      // Madeline Park: 900 E Baltimore Dr, El Paso, TX 79902
+      const destination = '900+E+Baltimore+Dr,+El+Paso,+TX+79902';
+      const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${destination}&travelmode=walking`;
+      
+      // Open Google Maps with directions
+      window.open(mapsUrl, '_blank');
     }
   </script>
 </body>
