@@ -2,10 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>graced - casey.earth</title>
   <meta name="description" content="A curated experience by Casey Silverstein" />
   <meta name="theme-color" content="#000000" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <style>
     * { 
       box-sizing: border-box;
@@ -126,6 +128,77 @@
       background: #e04a1c;
       transform: translateY(-2px);
     }
+    
+    /* Mobile optimizations */
+    @media (max-width: 768px) {
+      body {
+        padding: 16px;
+      }
+      
+      .container {
+        padding: 24px;
+        border-radius: 12px;
+      }
+      
+      h1 {
+        font-size: 28px;
+      }
+      
+      .subtitle {
+        font-size: 13px;
+      }
+      
+      .info {
+        padding: 12px;
+      }
+      
+      .info p {
+        font-size: 12px;
+      }
+      
+      .audio-section {
+        margin-bottom: 24px;
+      }
+      
+      .button {
+        display: block;
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 12px;
+        padding: 14px 24px;
+        font-size: 15px;
+        min-height: 48px; /* Touch-friendly minimum size */
+      }
+      
+      .button:last-child {
+        margin-bottom: 0;
+      }
+      
+      .button.primary {
+        padding: 18px 32px;
+        font-size: 17px;
+        min-height: 56px;
+      }
+    }
+    
+    /* Disable hover effects on touch devices */
+    @media (hover: none) {
+      .button:hover {
+        background: #fff;
+        color: #000;
+        transform: none;
+      }
+      
+      .button.secondary:hover {
+        background: transparent;
+        border-color: rgba(255, 255, 255, 0.3);
+      }
+      
+      .button.primary:hover {
+        background: #FF5A24;
+        transform: none;
+      }
+    }
   </style>
 </head>
 <body>
@@ -155,7 +228,7 @@
   
   <script>
     function testJourneyAudio() {
-      const audio = new Audio('/journey-audio.mp3');
+      const audio = new Audio('graced/journey-audio.mp3');
       audio.play().catch(err => {
         alert('Journey audio file not found.\n\nAdd journey-audio.mp3 to: site/graced/');
         console.log('Audio error:', err);
@@ -163,7 +236,7 @@
     }
     
     function testArrivalAudio() {
-      const audio = new Audio('/arrival-audio.mp3');
+      const audio = new Audio('graced/arrival-audio.mp3');
       audio.play().catch(err => {
         alert('Arrival audio file not found.\n\nAdd arrival-audio.mp3 to: site/graced/');
         console.log('Audio error:', err);
@@ -173,10 +246,17 @@
     function startJourney() {
       // Madeline Park: 900 E Baltimore Dr, El Paso, TX 79902
       const destination = '900+E+Baltimore+Dr,+El+Paso,+TX+79902';
+      
+      // Try to open in the app first, then fall back to web
+      const mapsApp = `google.navigation:q=${destination}&mode=w`;
       const mapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${destination}&travelmode=walking`;
       
-      // Open Google Maps with directions
-      window.open(mapsUrl, '_blank');
+      // Try iOS Maps or Google Maps app first
+      if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+        window.location.href = `maps://maps.google.com/maps?daddr=${destination}&dirflg=w`;
+      } else {
+        window.location.href = mapsUrl;
+      }
     }
   </script>
 </body>
