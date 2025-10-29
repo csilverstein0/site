@@ -155,6 +155,65 @@
       transform: scale(0.98);
     }
     
+    .audio-controls {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      max-width: 400px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 1000;
+    }
+    
+    .audio-control {
+      margin-bottom: 16px;
+    }
+    
+    .audio-control:last-child {
+      margin-bottom: 0;
+    }
+    
+    .audio-control-label {
+      font-size: 12px;
+      color: #333;
+      margin-bottom: 8px;
+      display: block;
+      font-weight: 500;
+    }
+    
+    .audio-slider {
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      background: #ddd;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    
+    .audio-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #4a4a4a;
+      cursor: pointer;
+    }
+    
+    .audio-slider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #4a4a4a;
+      cursor: pointer;
+      border: none;
+    }
+    
     @media (max-width: 768px) {
       body {
         padding: 16px;
@@ -217,10 +276,22 @@
     <button class="ready-button" id="readyButton" onclick="startJourney()">ready to go?</button>
   </div>
   
+  <div class="audio-controls">
+    <div class="audio-control">
+      <label class="audio-control-label">Background Music</label>
+      <input type="range" class="audio-slider" id="backgroundSlider" min="0" max="100" value="30">
+    </div>
+    <div class="audio-control">
+      <label class="audio-control-label">Cription Audio</label>
+      <input type="range" class="audio-slider" id="criptionSlider" min="0" max="100" value="80">
+    </div>
+  </div>
+  
   <script>
     let hasTime = null;
     let isHungry = null;
     let backgroundAudio = null;
+    let criptionAudio = null;
     
     function generateRandomColor() {
       // Generate a bright, vibrant color
@@ -304,9 +375,20 @@
         hungryMessage.classList.remove('show');
         
         // Play cription1.mp3 when user selects Yes
-        const audio = new Audio('cription1.mp3');
-        audio.volume = 0.8; // Set volume to 80%
-        audio.play().catch(err => {
+        if (!criptionAudio) {
+          criptionAudio = new Audio('cription1.mp3');
+          criptionAudio.volume = 0.8; // Set volume to 80%
+          
+          // Connect slider to audio
+          const slider = document.getElementById('criptionSlider');
+          slider.addEventListener('input', function() {
+            criptionAudio.volume = this.value / 100;
+          });
+          
+          // Sync slider value
+          slider.value = 80;
+        }
+        criptionAudio.play().catch(err => {
           console.log('Audio playback error:', err);
         });
         
@@ -365,7 +447,24 @@
     }
     
     // Initialize audio when page loads
-    window.addEventListener('DOMContentLoaded', initBackgroundAudio);
+    window.addEventListener('DOMContentLoaded', function() {
+      initBackgroundAudio();
+      
+      // Connect background audio slider
+      const backgroundSlider = document.getElementById('backgroundSlider');
+      backgroundSlider.addEventListener('input', function() {
+        if (backgroundAudio) {
+          backgroundAudio.volume = this.value / 100;
+        }
+      });
+      
+      // Sync slider when audio is created
+      setTimeout(function() {
+        if (backgroundAudio) {
+          backgroundSlider.value = backgroundAudio.volume * 100;
+        }
+      }, 100);
+    });
     
     // Also try on first interaction (for iOS)
     document.addEventListener('touchstart', function() {
