@@ -293,6 +293,59 @@
     let backgroundAudio = null;
     let criptionAudio = null;
     
+    // Web Audio API setup for iOS volume control
+    let audioContext = null;
+    let backgroundGainNode = null;
+    let criptionGainNode = null;
+    let backgroundSource = null;
+    let criptionSource = null;
+    let backgroundBuffer = null;
+    let criptionBuffer = null;
+    
+    // Initialize AudioContext on user interaction (required for iOS)
+    function initAudioContext() {
+      if (!audioContext) {
+        try {
+          audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        } catch(e) {
+          console.log('Web Audio API not supported:', e);
+        }
+      }
+      return audioContext;
+    }
+    
+    // Load audio as buffer for Web Audio API
+    async function loadAudioBuffer(url) {
+      if (!audioContext) {
+        initAudioContext();
+      }
+      try {
+        const response = await fetch(url);
+        const arrayBuffer = await response.arrayBuffer();
+        return await audioContext.decodeAudioData(arrayBuffer);
+      } catch(e) {
+        console.log('Error loading audio:', e);
+        return null;
+      }
+    }
+    
+    // Play audio with Web Audio API (works on iOS)
+    function playAudioWithWebAPI(buffer, gainNode, loop = false) {
+      if (!audioContext || !buffer) return null;
+      
+      const source = audioContext.createBufferSource();
+      source.buffer = buffer;
+      source.loop = loop;
+      
+      const gain = gainNode || audioContext.createGain();
+      source.connect(gain);
+      gain.connect(audioContext.destination);
+      
+      
+      source.start(0);
+      return { source, gain };
+    }
+    
     function generateRandomColor() {
       // Generate a bright, vibrant color
       const hue = Math.floor(Math.random() * 360);
@@ -375,22 +428,64 @@
         hungryMessage.classList.remove('show');
         
         // Play cription1.mp3 when user selects Yes
-        if (!criptionAudio) {
+        if (!audioContext) {
+          initAudioContext();
+        }
+        
+        if (audioContext && audioContext.state !== 'running') {
+          audioContext.resume();
+        }
+        
+        // Try Web Audio API first (works on iOS)
+        if (audioContext && !criptionBuffer) {
+          loadAudioBuffer('cription1.mp3').then(buffer => {
+            if (buffer) {
+              criptionBuffer = buffer;
+              if (!criptionGainNode) {
+                criptionGainNode = audioContext.createGain();
+                criptionGainNode.gain.value = 0.8;
+                criptionGainNode.connect(audioContext.destination);
+              }
+              
+              const result = playAudioWithWebAPI(buffer, criptionGainNode, false);
+              if (result) {
+                criptionSource = result.source;
+              }
+              
+              // Connect slider to gain node
+              const slider = document.getElementById('criptionSlider');
+              slider.addEventListener('input', function() {
+                if (criptionGainNode) {
+                  criptionGainNode.gain.value = this.value / 100;
+                }
+              });
+              slider.value = 80;
+            }
+          });
+        } else if (!criptionAudio) {
+          // Fallback to regular Audio
           criptionAudio = new Audio('cription1.mp3');
-          criptionAudio.volume = 0.8; // Set volume to 80%
+          criptionAudio.volume = 0.8;
           
-          // Connect slider to audio
           const slider = document.getElementById('criptionSlider');
           slider.addEventListener('input', function() {
-            criptionAudio.volume = this.value / 100;
+            if (criptionAudio) {
+              criptionAudio.volume = this.value / 100;
+            }
           });
-          
-          // Sync slider value
           slider.value = 80;
+          
+          criptionAudio.play().catch(err => {
+            console.log('Audio playback error:', err);
+          });
+        } else {
+          // Resume if already playing
+          if (criptionAudio.paused) {
+            criptionAudio.play().catch(err => {
+              console.log('Audio playback error:', err);
+            });
+          }
         }
-        criptionAudio.play().catch(err => {
-          console.log('Audio playback error:', err);
-        });
         
         checkReady();
       }
@@ -414,66 +509,74 @@
     }
     
     // Initialize and play audio - works on iOS with user interaction
-    function initBackgroundAudio() {
-      if (!backgroundAudio) {
-        backgroundAudio = new Audio('Plearn_Promdan_Ying_Ting.mp3');
-        backgroundAudio.volume = 0.3; // Set volume to 30%
+    async function initBackgroundAudio() {
+      // Initialize AudioContext on first user interaction
+      const initOnInteraction = function() {
+        if (!audioContext) {
+          initAudioContext();
+        }
         
-        // Try to play immediately (may fail on iOS)
-        const playPromise = backgroundAudio.play();
+        if (audioContext && audioContext.state !== 'running') {
+          audioContext.resume();
+        }
         
-        if (playPromise !== undefined) {
-          playPromise.catch(err => {
-            // Autoplay blocked - will need user interaction
-            console.log('Audio autoplay prevented, waiting for user interaction');
-            
-            // Add one-time touch/click handler for iOS
-            const playOnInteraction = function() {
-              backgroundAudio.play().then(() => {
-                console.log('Audio started on user interaction');
-              }).catch(e => {
-                console.log('Audio playback error:', e);
+        // Try Web Audio API first (works on iOS)
+        if (audioContext && !backgroundBuffer) {
+          loadAudioBuffer('Plearn_Promdan_Ying_Ting.mp3').then(buffer => {
+            if (buffer) {
+              backgroundBuffer = buffer;
+              if (!backgroundGainNode) {
+                backgroundGainNode = audioContext.createGain();
+                backgroundGainNode.gain.value = 0.3;
+                backgroundGainNode.connect(audioContext.destination);
+              }
+              
+              const result = playAudioWithWebAPI(buffer, backgroundGainNode, true);
+              if (result) {
+                backgroundSource = result.source;
+              }
+              
+              // Connect slider to gain node
+              const slider = document.getElementById('backgroundSlider');
+              slider.addEventListener('input', function() {
+                if (backgroundGainNode) {
+                  backgroundGainNode.gain.value = this.value / 100;
+                }
               });
-              // Remove the listener after first play
-              document.removeEventListener('touchstart', playOnInteraction);
-              document.removeEventListener('click', playOnInteraction);
-            };
-            
-            document.addEventListener('touchstart', playOnInteraction, { once: true });
-            document.addEventListener('click', playOnInteraction, { once: true });
+              slider.value = 30;
+            }
+          });
+        } else if (!backgroundAudio) {
+          // Fallback to regular Audio
+          backgroundAudio = new Audio('Plearn_Promdan_Ying_Ting.mp3');
+          backgroundAudio.volume = 0.3;
+          backgroundAudio.loop = true;
+          
+          const slider = document.getElementById('backgroundSlider');
+          slider.addEventListener('input', function() {
+            if (backgroundAudio) {
+              backgroundAudio.volume = this.value / 100;
+            }
+          });
+          
+          backgroundAudio.play().catch(err => {
+            console.log('Background audio error:', err);
           });
         }
-      }
+      };
+      
+      // Try to play immediately
+      initOnInteraction();
+      
+      // Also set up for user interaction (required for iOS)
+      document.addEventListener('touchstart', initOnInteraction, { once: true });
+      document.addEventListener('click', initOnInteraction, { once: true });
     }
     
     // Initialize audio when page loads
     window.addEventListener('DOMContentLoaded', function() {
       initBackgroundAudio();
-      
-      // Connect background audio slider
-      const backgroundSlider = document.getElementById('backgroundSlider');
-      backgroundSlider.addEventListener('input', function() {
-        if (backgroundAudio) {
-          backgroundAudio.volume = this.value / 100;
-        }
-      });
-      
-      // Sync slider when audio is created
-      setTimeout(function() {
-        if (backgroundAudio) {
-          backgroundSlider.value = backgroundAudio.volume * 100;
-        }
-      }, 100);
     });
-    
-    // Also try on first interaction (for iOS)
-    document.addEventListener('touchstart', function() {
-      if (backgroundAudio && backgroundAudio.paused) {
-        backgroundAudio.play().catch(err => {
-          console.log('Audio play on touchstart failed:', err);
-        });
-      }
-    }, { once: true });
   </script>
 </body>
 </html>
