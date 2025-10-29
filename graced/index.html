@@ -17,7 +17,7 @@
     
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #f5f5f5;
+      background: #e5e5e5;
       color: #000;
       min-height: 100vh;
       display: flex;
@@ -27,11 +27,21 @@
       padding: 20px;
     }
     
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background: #fff;
+      border: 1px solid #000;
+      border-radius: 12px;
+      padding: 40px;
+      box-sizing: border-box;
+    }
+    
     .header {
       text-align: center;
-      margin-bottom: 40px;
+      margin-bottom: 32px;
       font-size: 16px;
-      color: #333;
+      color: #000;
       opacity: 0;
       animation: fadeIn 1.5s ease-in forwards;
     }
@@ -45,112 +55,63 @@
       }
     }
     
-    .questions-wrapper {
-      width: 100%;
-      max-width: 400px;
+    .bone-section {
+      text-align: center;
       margin-bottom: 32px;
-      display: grid;
-      grid-template-rows: 136px 136px;
-      gap: 32px;
+      opacity: 0;
+      animation: fadeIn 1.5s ease-in 0.3s forwards;
     }
     
-    .question-container {
+    .bone-icon {
+      font-size: 48px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      display: inline-block;
+      transition: transform 0.2s ease;
+    }
+    
+    .bone-icon:active {
+      transform: scale(0.95);
+    }
+    
+    .bone-hint {
+      font-size: 14px;
+      color: #666;
+    }
+    
+    .video-container {
       width: 100%;
-      box-sizing: border-box;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
+      margin-bottom: 32px;
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 aspect ratio */
+      height: 0;
       overflow: hidden;
     }
     
-    .question-container:first-of-type {
-      opacity: 0;
-      animation: fadeIn 5s ease-in 0.3s forwards;
-    }
-    
-    .question-container.hidden {
-      visibility: hidden;
-      opacity: 0;
-      pointer-events: none;
-    }
-    
-    .question {
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 16px;
-      text-align: center;
-      color: #000;
-    }
-    
-    .button-group {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-    }
-    
-    .button {
-      background: #4a4a4a;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 14px 32px;
-      font-size: 16px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      min-height: 48px;
-      flex: 1;
-      max-width: 150px;
-    }
-    
-    .button:active:not([data-selected-color]) {
-      background: #333;
-      transform: scale(0.98);
-    }
-    
-    .button:active[data-selected-color] {
-      transform: scale(0.98);
-    }
-    
-    .result-container {
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
-      max-width: 400px;
-      margin-top: 32px;
-      min-height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      height: 100%;
+      border: none;
     }
     
-    .message {
-      text-align: center;
-      font-size: 18px;
-      color: #666;
-      display: none;
-    }
-    
-    .message.show {
-      display: block;
-    }
-    
-    .ready-button {
+    .lessgo-button {
       background: #4a4a4a;
       color: #fff;
       border: none;
       border-radius: 8px;
-      padding: 14px 32px;
-      font-size: 18px;
+      padding: 16px 32px;
+      font-size: 16px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
       min-height: 56px;
       width: 100%;
-      display: none;
     }
     
-    .ready-button.show {
-      display: block;
-    }
-    
-    .ready-button:active {
+    .lessgo-button:active {
       background: #333;
       transform: scale(0.98);
     }
@@ -160,9 +121,10 @@
       bottom: 20px;
       left: 20px;
       right: 20px;
-      max-width: 400px;
+      max-width: 600px;
       margin: 0 auto;
       background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(0, 0, 0, 0.1);
       border-radius: 12px;
       padding: 16px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -250,30 +212,27 @@
   </style>
 </head>
 <body>
-  <div class="header">A Gift From Casey & Juju</div>
-  
-  <div class="questions-wrapper">
-    <div class="question-container">
-      <div class="question">Do you have 2 hours?</div>
-      <div class="button-group">
-        <button id="timeYes" class="button" onclick="handleTimeQuestion(true, this)">Yes</button>
-        <button id="timeNo" class="button" onclick="handleTimeQuestion(false, this)">No</button>
-      </div>
+  <div class="container">
+    <div class="header">from casey & juju</div>
+    
+    <div class="bone-section">
+      <div class="bone-icon" onclick="handleBoneClick()">🦴</div>
+      <div class="bone-hint">(click me)</div>
     </div>
     
-    <div class="question-container hidden" id="hungryQuestionContainer">
-      <div class="question">Are you hungry?</div>
-      <div class="button-group">
-        <button id="hungryYes" class="button" onclick="handleHungryQuestion(true, this)">Yes</button>
-        <button id="hungryNo" class="button" onclick="handleHungryQuestion(false, this)">No</button>
-      </div>
+    <div class="video-container" id="videoContainer">
+      <iframe 
+        width="560" 
+        height="315" 
+        src="https://www.youtube.com/embed/-BD3zq9p-_E?si=A9SZrU4w3sN5iKMd&#038;controls=0&#038;autoplay=1&#038;mute=1&#038;start=75" 
+        title="YouTube video player" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+        allowfullscreen>
+      </iframe>
     </div>
-  </div>
-  
-  <div class="result-container">
-    <div id="timeMessage" class="message">come back when you have more time</div>
-    <div id="hungryMessage" class="message">come back when you are hungry</div>
-    <button class="ready-button" id="readyButton" onclick="startJourney()">ready to go?</button>
+    
+    <button class="lessgo-button" id="lessgoButton" onclick="startJourney()">Less go</button>
   </div>
   
   <div class="audio-controls">
@@ -288,8 +247,6 @@
   </div>
   
   <script>
-    let hasTime = null;
-    let isHungry = null;
     let backgroundAudio = null;
     let criptionAudio = null;
     
@@ -342,125 +299,34 @@
       }
     }
     
-    function generateRandomColor() {
-      // Generate a bright, vibrant color
-      const hue = Math.floor(Math.random() * 360);
-      const saturation = 60 + Math.floor(Math.random() * 40); // 60-100%
-      const lightness = 40 + Math.floor(Math.random() * 30); // 40-70%
-      return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
-    }
-    
-    function setButtonColor(button, color) {
-      button.style.backgroundColor = color;
-      button.dataset.selectedColor = color;
-    }
-    
-    function resetButtonColor(button) {
-      button.style.backgroundColor = '#4a4a4a';
-      delete button.dataset.selectedColor;
-    }
-    
-    function handleTimeQuestion(answer, button) {
-      hasTime = answer;
-      
-      // Generate random color for selected button
-      const color = generateRandomColor();
-      setButtonColor(button, color);
-      
-      // Reset the other button
-      const otherButton = answer ? document.getElementById('timeNo') : document.getElementById('timeYes');
-      resetButtonColor(otherButton);
-      
-      const timeMessage = document.getElementById('timeMessage');
-      const hungryQuestionContainer = document.getElementById('hungryQuestionContainer');
-      
-      if (!answer) {
-        // Show "come back" message
-        timeMessage.classList.add('show');
-        document.getElementById('hungryMessage').classList.remove('show');
-        document.getElementById('readyButton').classList.remove('show');
+    function handleBoneClick() {
+      // Play cription audio when bone is clicked
+      if (!criptionAudio) {
+        initAudioContext(); // Ensure AudioContext is ready
         
-        // Hide second question
-        hungryQuestionContainer.classList.add('hidden');
+        criptionAudio = new Audio('cription1.mp3');
+        criptionAudio.volume = 0.8; // Set for non-iOS
         
-        // Reset hungry question state
-        isHungry = null;
-        resetButtonColor(document.getElementById('hungryYes'));
-        resetButtonColor(document.getElementById('hungryNo'));
-      } else {
-        // Hide "come back" message
-        timeMessage.classList.remove('show');
+        // Connect to Web Audio API for iOS volume control
+        criptionGainNode = connectAudioToWebAPI(criptionAudio, 0.8);
         
-        // Show second question
-        hungryQuestionContainer.classList.remove('hidden');
-        
-        checkReady();
-      }
-    }
-    
-    function handleHungryQuestion(answer, button) {
-      isHungry = answer;
-      
-      // Generate random color for selected button
-      const color = generateRandomColor();
-      setButtonColor(button, color);
-      
-      // Reset the other button
-      const otherButton = answer ? document.getElementById('hungryNo') : document.getElementById('hungryYes');
-      resetButtonColor(otherButton);
-      
-      const hungryMessage = document.getElementById('hungryMessage');
-      const timeMessage = document.getElementById('timeMessage');
-      
-      // Make sure time message is hidden
-      timeMessage.classList.remove('show');
-      
-      if (!answer) {
-        // Show "come back" message
-        hungryMessage.classList.add('show');
-        document.getElementById('readyButton').classList.remove('show');
-      } else {
-        // Hide "come back" message
-        hungryMessage.classList.remove('show');
-        
-        // Play cription1.mp3 when user selects Yes
-        if (!criptionAudio) {
-          initAudioContext(); // Ensure AudioContext is ready
-          
-          criptionAudio = new Audio('cription1.mp3');
-          criptionAudio.volume = 0.8; // Set for non-iOS
-          
-          // Connect to Web Audio API for iOS volume control
-          criptionGainNode = connectAudioToWebAPI(criptionAudio, 0.8);
-          
-          const slider = document.getElementById('criptionSlider');
-          slider.addEventListener('input', function() {
-            const volume = this.value / 100;
-            if (criptionGainNode) {
-              // Use Web Audio API gain (works on iOS)
-              criptionGainNode.gain.value = volume;
-            } else if (criptionAudio) {
-              // Fallback for non-iOS
-              criptionAudio.volume = volume;
-            }
-          });
-          slider.value = 80;
-        }
-        
-        criptionAudio.play().catch(err => {
-          console.log('Audio playback error:', err);
+        const slider = document.getElementById('criptionSlider');
+        slider.addEventListener('input', function() {
+          const volume = this.value / 100;
+          if (criptionGainNode) {
+            // Use Web Audio API gain (works on iOS)
+            criptionGainNode.gain.value = volume;
+          } else if (criptionAudio) {
+            // Fallback for non-iOS
+            criptionAudio.volume = volume;
+          }
         });
-        
-        checkReady();
+        slider.value = 80;
       }
-    }
-    
-    function checkReady() {
-      if (hasTime === true && isHungry === true) {
-        document.getElementById('readyButton').classList.add('show');
-      } else {
-        document.getElementById('readyButton').classList.remove('show');
-      }
+      
+      criptionAudio.play().catch(err => {
+        console.log('Audio playback error:', err);
+      });
     }
     
     function startJourney() {
