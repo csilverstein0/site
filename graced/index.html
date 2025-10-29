@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>graced - casey.earth</title>
   <meta name="description" content="A curated experience by Casey Silverstein" />
-  <meta name="theme-color" content="#000000" />
+  <meta name="theme-color" content="#f5f5f5" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <style>
     * { 
       box-sizing: border-box;
@@ -17,30 +17,141 @@
     
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #000;
-      color: #fff;
+      background: #f5f5f5;
+      color: #000;
       min-height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       padding: 20px;
     }
     
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 16px;
+      color: #333;
+      opacity: 0;
+      animation: fadeIn 1.5s ease-in forwards;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    
+    .questions-wrapper {
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 32px;
+      display: grid;
+      grid-template-rows: 136px 136px;
+      gap: 32px;
+    }
+    
+    .question-container {
+      width: 100%;
+      box-sizing: border-box;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      overflow: hidden;
+    }
+    
+    .question-container:first-of-type {
+      opacity: 0;
+      animation: fadeIn 5s ease-in 0.3s forwards;
+    }
+    
+    .question-container.hidden {
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .question {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      text-align: center;
+      color: #000;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+    
     .button {
-      background: #FF5A24;
+      background: #4a4a4a;
       color: #fff;
       border: none;
       border-radius: 8px;
-      padding: 18px 48px;
+      padding: 14px 32px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-height: 48px;
+      flex: 1;
+      max-width: 150px;
+    }
+    
+    .button:active:not([data-selected-color]) {
+      background: #333;
+      transform: scale(0.98);
+    }
+    
+    .button:active[data-selected-color] {
+      transform: scale(0.98);
+    }
+    
+    .result-container {
+      width: 100%;
+      max-width: 400px;
+      margin-top: 32px;
+      min-height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .message {
+      text-align: center;
+      font-size: 18px;
+      color: #666;
+      display: none;
+    }
+    
+    .message.show {
+      display: block;
+    }
+    
+    .ready-button {
+      background: #4a4a4a;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 32px;
       font-size: 18px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
       min-height: 56px;
+      width: 100%;
+      display: none;
     }
     
-    .button:active {
-      background: #e04a1c;
+    .ready-button.show {
+      display: block;
+    }
+    
+    .ready-button:active {
+      background: #333;
       transform: scale(0.98);
     }
     
@@ -49,25 +160,172 @@
         padding: 16px;
       }
       
+      .question {
+        font-size: 22px;
+      }
+      
       .button {
-        width: 100%;
-        padding: 20px 48px;
+        padding: 16px 24px;
+        font-size: 15px;
+      }
+      
+      .message {
+        font-size: 16px;
+      }
+      
+      .ready-button {
+        padding: 18px 32px;
         font-size: 17px;
       }
     }
     
     @media (hover: hover) {
-      .button:hover {
-        background: #e04a1c;
-        transform: translateY(-2px);
+      .button:hover:not([data-selected-color]) {
+        background: #333;
+      }
+      
+      .ready-button:hover {
+        background: #333;
       }
     }
   </style>
 </head>
 <body>
-  <button class="button" onclick="startJourney()">Start Journey</button>
+  <div class="header">A Gift From Casey & Juju</div>
+  
+  <div class="questions-wrapper">
+    <div class="question-container">
+      <div class="question">Do you have 2 hours?</div>
+      <div class="button-group">
+        <button id="timeYes" class="button" onclick="handleTimeQuestion(true, this)">Yes</button>
+        <button id="timeNo" class="button" onclick="handleTimeQuestion(false, this)">No</button>
+      </div>
+    </div>
+    
+    <div class="question-container hidden" id="hungryQuestionContainer">
+      <div class="question">Are you hungry?</div>
+      <div class="button-group">
+        <button id="hungryYes" class="button" onclick="handleHungryQuestion(true, this)">Yes</button>
+        <button id="hungryNo" class="button" onclick="handleHungryQuestion(false, this)">No</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="result-container">
+    <div id="timeMessage" class="message">come back when you have more time</div>
+    <div id="hungryMessage" class="message">come back when you are hungry</div>
+    <button class="ready-button" id="readyButton" onclick="startJourney()">ready to go?</button>
+  </div>
   
   <script>
+    let hasTime = null;
+    let isHungry = null;
+    let backgroundAudio = null;
+    
+    function generateRandomColor() {
+      // Generate a bright, vibrant color
+      const hue = Math.floor(Math.random() * 360);
+      const saturation = 60 + Math.floor(Math.random() * 40); // 60-100%
+      const lightness = 40 + Math.floor(Math.random() * 30); // 40-70%
+      return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    }
+    
+    function setButtonColor(button, color) {
+      button.style.backgroundColor = color;
+      button.dataset.selectedColor = color;
+    }
+    
+    function resetButtonColor(button) {
+      button.style.backgroundColor = '#4a4a4a';
+      delete button.dataset.selectedColor;
+    }
+    
+    function handleTimeQuestion(answer, button) {
+      hasTime = answer;
+      
+      // Generate random color for selected button
+      const color = generateRandomColor();
+      setButtonColor(button, color);
+      
+      // Reset the other button
+      const otherButton = answer ? document.getElementById('timeNo') : document.getElementById('timeYes');
+      resetButtonColor(otherButton);
+      
+      const timeMessage = document.getElementById('timeMessage');
+      const hungryQuestionContainer = document.getElementById('hungryQuestionContainer');
+      
+      if (!answer) {
+        // Show "come back" message
+        timeMessage.classList.add('show');
+        document.getElementById('hungryMessage').classList.remove('show');
+        document.getElementById('readyButton').classList.remove('show');
+        
+        // Hide second question
+        hungryQuestionContainer.classList.add('hidden');
+        
+        // Reset hungry question state
+        isHungry = null;
+        resetButtonColor(document.getElementById('hungryYes'));
+        resetButtonColor(document.getElementById('hungryNo'));
+      } else {
+        // Hide "come back" message
+        timeMessage.classList.remove('show');
+        
+        // Show second question
+        hungryQuestionContainer.classList.remove('hidden');
+        
+        checkReady();
+      }
+    }
+    
+    function handleHungryQuestion(answer, button) {
+      isHungry = answer;
+      
+      // Generate random color for selected button
+      const color = generateRandomColor();
+      setButtonColor(button, color);
+      
+      // Reset the other button
+      const otherButton = answer ? document.getElementById('hungryNo') : document.getElementById('hungryYes');
+      resetButtonColor(otherButton);
+      
+      const hungryMessage = document.getElementById('hungryMessage');
+      const timeMessage = document.getElementById('timeMessage');
+      
+      // Make sure time message is hidden
+      timeMessage.classList.remove('show');
+      
+      if (!answer) {
+        // Show "come back" message
+        hungryMessage.classList.add('show');
+        document.getElementById('readyButton').classList.remove('show');
+      } else {
+        // Hide "come back" message
+        hungryMessage.classList.remove('show');
+        
+        // Reduce background audio volume to 50%
+        if (backgroundAudio) {
+          backgroundAudio.volume = 0.5;
+        }
+        
+        // Play cription1.mp3 when user selects Yes
+        const audio = new Audio('cription1.mp3');
+        audio.play().catch(err => {
+          console.log('Audio playback error:', err);
+        });
+        
+        checkReady();
+      }
+    }
+    
+    function checkReady() {
+      if (hasTime === true && isHungry === true) {
+        document.getElementById('readyButton').classList.add('show');
+      } else {
+        document.getElementById('readyButton').classList.remove('show');
+      }
+    }
+    
     function startJourney() {
       // Mission Hills Park: 3800 Okeefe Dr, El Paso, TX 79902
       const destination = '3800+Okeefe+Dr,+El+Paso,+TX+79902';
@@ -76,6 +334,16 @@
       // Always open in Google Maps
       window.location.href = mapsUrl;
     }
+    
+    // Autoplay audio when page loads
+    window.addEventListener('DOMContentLoaded', function() {
+      backgroundAudio = new Audio('Plearn_Promdan_Ying_Ting.mp3');
+      backgroundAudio.volume = 0.8; // Set volume to 80%
+      backgroundAudio.play().catch(err => {
+        // Autoplay may be blocked by browser policy
+        console.log('Audio autoplay prevented:', err);
+      });
+    });
   </script>
 </body>
 </html>
