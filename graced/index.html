@@ -221,6 +221,7 @@
     let hasTime = null;
     let isHungry = null;
     let backgroundAudio = null;
+    let targetVolume = 0.8; // Track target volume for background audio
     
     function generateRandomColor() {
       // Generate a bright, vibrant color
@@ -303,9 +304,11 @@
         // Hide "come back" message
         hungryMessage.classList.remove('show');
         
-        // Reduce background audio volume to 50%
+        // Reduce background audio volume to 30%
         if (backgroundAudio) {
-          backgroundAudio.volume = 0.5;
+          backgroundAudio.volume = 0.3;
+          // Update target volume so we don't reset it
+          targetVolume = 0.3;
         }
         
         // Play cription1.mp3 when user selects Yes
@@ -339,7 +342,25 @@
     function initBackgroundAudio() {
       if (!backgroundAudio) {
         backgroundAudio = new Audio('Plearn_Promdan_Ying_Ting.mp3');
-        backgroundAudio.volume = 0.8; // Set volume to 80%
+        backgroundAudio.volume = targetVolume; // Set volume to 80%
+        
+        // Ensure volume stays correct on iOS
+        backgroundAudio.addEventListener('loadeddata', function() {
+          backgroundAudio.volume = targetVolume;
+        });
+        backgroundAudio.addEventListener('play', function() {
+          // Re-ensure volume is correct when playing
+          backgroundAudio.volume = targetVolume;
+        });
+        
+        // Periodically check and maintain volume on iOS
+        setInterval(function() {
+          if (backgroundAudio && !backgroundAudio.paused) {
+            if (Math.abs(backgroundAudio.volume - targetVolume) > 0.05) {
+              backgroundAudio.volume = targetVolume;
+            }
+          }
+        }, 500);
         
         // Try to play immediately (may fail on iOS)
         const playPromise = backgroundAudio.play();
@@ -353,6 +374,8 @@
             const playOnInteraction = function() {
               backgroundAudio.play().then(() => {
                 console.log('Audio started on user interaction');
+                // Re-ensure volume is set after play starts
+                backgroundAudio.volume = 0.8;
               }).catch(e => {
                 console.log('Audio playback error:', e);
               });
@@ -374,7 +397,10 @@
     // Also try on first interaction (for iOS)
     document.addEventListener('touchstart', function() {
       if (backgroundAudio && backgroundAudio.paused) {
-        backgroundAudio.play().catch(err => {
+        backgroundAudio.play().then(() => {
+          // Ensure volume is correct when starting on iOS
+          backgroundAudio.volume = 0.8;
+        }).catch(err => {
           console.log('Audio play on touchstart failed:', err);
         });
       }
