@@ -335,15 +335,50 @@
       window.location.href = mapsUrl;
     }
     
-    // Autoplay audio when page loads
-    window.addEventListener('DOMContentLoaded', function() {
-      backgroundAudio = new Audio('Plearn_Promdan_Ying_Ting.mp3');
-      backgroundAudio.volume = 0.8; // Set volume to 80%
-      backgroundAudio.play().catch(err => {
-        // Autoplay may be blocked by browser policy
-        console.log('Audio autoplay prevented:', err);
-      });
-    });
+    // Initialize and play audio - works on iOS with user interaction
+    function initBackgroundAudio() {
+      if (!backgroundAudio) {
+        backgroundAudio = new Audio('Plearn_Promdan_Ying_Ting.mp3');
+        backgroundAudio.volume = 0.8; // Set volume to 80%
+        
+        // Try to play immediately (may fail on iOS)
+        const playPromise = backgroundAudio.play();
+        
+        if (playPromise !== undefined) {
+          playPromise.catch(err => {
+            // Autoplay blocked - will need user interaction
+            console.log('Audio autoplay prevented, waiting for user interaction');
+            
+            // Add one-time touch/click handler for iOS
+            const playOnInteraction = function() {
+              backgroundAudio.play().then(() => {
+                console.log('Audio started on user interaction');
+              }).catch(e => {
+                console.log('Audio playback error:', e);
+              });
+              // Remove the listener after first play
+              document.removeEventListener('touchstart', playOnInteraction);
+              document.removeEventListener('click', playOnInteraction);
+            };
+            
+            document.addEventListener('touchstart', playOnInteraction, { once: true });
+            document.addEventListener('click', playOnInteraction, { once: true });
+          });
+        }
+      }
+    }
+    
+    // Initialize audio when page loads
+    window.addEventListener('DOMContentLoaded', initBackgroundAudio);
+    
+    // Also try on first interaction (for iOS)
+    document.addEventListener('touchstart', function() {
+      if (backgroundAudio && backgroundAudio.paused) {
+        backgroundAudio.play().catch(err => {
+          console.log('Audio play on touchstart failed:', err);
+        });
+      }
+    }, { once: true });
   </script>
 </body>
 </html>
