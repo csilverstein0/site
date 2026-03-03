@@ -55,7 +55,7 @@ function App() {
     <div className="min-h-screen bg-white">
       <main className="max-w-3xl mx-auto px-4 py-8 md:py-12">
         <div className="space-y-5">
-          <h1 className="font-sans text-[14px] font-normal">Casey Silverstein</h1>
+          <h1 className="font-sans text-[14px] font-normal">Casey Silverstein 🌍</h1>
 
           <section>
             {timelineData.map((event, index) => (
