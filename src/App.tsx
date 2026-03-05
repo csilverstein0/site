@@ -76,7 +76,7 @@ function App() {
                   )}
                   {event.badge === "alive" && (
                     <Badge variant="outline" className="text-[11px] font-normal px-1.5 py-0 h-5 text-gray-400 rounded">
-                      alive
+                      ✿
                     </Badge>
                   )}
                 </div>
